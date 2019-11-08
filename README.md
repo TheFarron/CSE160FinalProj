@@ -13,3 +13,8 @@ confirm (after possible adjustments based on the feedback you receive) your prop
 perform the proposed task (highly recommended to start early).
 produce a one-page executive summary, plus 5-7 page report of technical supporting material, plus one page appendix describing contributions of each team member, due Sunday, December 15.
 make a ten-to-eleven minute presentation of your project and your results to the class on Monday, December 16 at 7pm.
+
+
+
+
+https://www.kaggle.com/osmi/mental-health-in-tech-survey
