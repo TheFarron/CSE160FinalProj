@@ -18,3 +18,17 @@ make a ten-to-eleven minute presentation of your project and your results to the
 
 
 https://www.kaggle.com/osmi/mental-health-in-tech-survey
+
+Topic: Mental Health in the Tech Industry
+
+Group 2: O. Gencer Ates, Matthew Dolce, Hannah Lee, Felix Quintana
+
+Dataset: https://www.kaggle.com/osmi/mental-health-in-tech-survey
+
+Goal: Figure the level of difficulty of dealing with mental illnesses in companies, mainly tech companies, likelihood of getting treated for mental illnesses for employees in these industries, suggest possible options for the companies and employees to pursue.
+
+Data: We will be using a dataset from kaggle.com about mental health in tech which has 1259 subjects (about 1241 of them seem to be usable) with 27 factors including pursuing treatment, company benefits, medical history(-ish).
+
+Target Audience: Potential employees who may be dealing with mental health problems deciding on companies to work for, and companies that are trying to increase productivity with employees with these problems.
+
+Process: To begin we will be going through a thorough data cleanup process to make the data workable for the project. Afterwards we will be using data visualisation methods to answer potential questions that don’t necessarily require predictions. And finally since our prediction problems seem to be classification problems we will be using a combination of logistic regression, knn, decision trees and random forest models.
