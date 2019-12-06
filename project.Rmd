@@ -5,5 +5,14 @@ levels(data$How.many.employees.does.your.company.or.organization.have.) <- c(lev
 data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="5-Jan"] <- "1-5"
 data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
 
+#64 -> 89
+for(i in 64:89){
+  levels(data[[i]]) <- c(levels(data[[i]]), 0, 1)
+  for(j in 1:nrow(data)){
+    #print(paste(i, ", ", j))
+    data[[i]][j] <- if(is.na(data[[i]][j]) | data[[i]][j] == "") 0 else 1
+  }
+}
+
 data
 ```
