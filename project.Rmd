@@ -21,4 +21,14 @@ head(data)
 ```{r}
 str(data)
 ```
+```{r}
+selfEmployedSplit <- split(data, data$X.strong.Are.you.self.employed...strong.)
+```
+```{r}
+employedDF <- selfEmployedSplit[[0]]
+selfemployedDF <- selfEmployedSplit[[1]]
+
+employedDF
+selfemployedDF
+```
 
