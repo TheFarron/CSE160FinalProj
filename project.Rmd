@@ -6,7 +6,12 @@ dateToRange <- function (range){
 
 ```{r}
 data <- read.csv("OSMI Mental Health in Tech Survey 2017-18.csv", header=TRUE)
-# data$How.many.employees.does.your.company.or.organization.have. <- dateToRange(data$How.many.employees.does.your.company.or.organization.have.)
+
+levels(data$How.many.employees.does.your.company.or.organization.have.) <- c(levels(data$How.many.employees.does.your.company.or.organization.have.), "1-5", "6-25")
+data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="5-Jan"] <- "1-5"
+data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
+
+data
 ```
 
 ```{r}
