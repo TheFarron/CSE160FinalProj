@@ -1,18 +1,34 @@
+Reading in the data to a data.frame object.
 ```{r}
 data <- read.csv("OSMI Mental Health in Tech Survey 2017-18.csv", header=TRUE)
+```
 
+Replacing the dates in the 'how.many.employees...' with proper ranges.
+```{r}
 levels(data$How.many.employees.does.your.company.or.organization.have.) <- c(levels(data$How.many.employees.does.your.company.or.organization.have.), "1-5", "6-25")
 data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="5-Jan"] <- "1-5"
 data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
+```
 
+For all of the columns asking if they have a certain mental health issue, replaces the value with a '1' if they do and a '0' if they don't.
+```{r}
 #64 -> 89
 for(i in 64:89){
   levels(data[[i]]) <- c(levels(data[[i]]), 0, 1)
   for(j in 1:nrow(data)){
-    #print(paste(i, ", ", j))
     data[[i]][j] <- if(is.na(data[[i]][j]) | data[[i]][j] == "") 0 else 1
   }
 }
+```
 
+Removes all the repeat columns asking if they have a certain mental health issue that are completely blank.
+```{r}
+#51 -> 63
+for(i in 63:51){
+  data[[i]] <- NULL 
+}
+```
+
+```{r}
 data
 ```
