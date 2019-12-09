@@ -77,10 +77,18 @@ data$What.is.your.gender. <- gender
 ```
 
 ```{r}
+data$What.is.your.gender. <- as.factor(data$What.is.your.gender.)
+```
+
+
+```{r}
 table(data$What.is.your.gender.)
 ```
 ```{r}
 data
+```
+```{r}
+str(data$What.is.your.gender.)
 ```
 
 
