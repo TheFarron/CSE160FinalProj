@@ -1,27 +1,37 @@
+Reading in the data to a data.frame object.
 ```{r}
-dateToRange <- function (range){
-  
+data <- read.csv("OSMI Mental Health in Tech Survey 2017-18.csv", header=TRUE)
+```
+
+Replacing the dates in the 'how.many.employees...' with proper ranges.
+```{r}
+levels(data$How.many.employees.does.your.company.or.organization.have.) <- c(levels(data$How.many.employees.does.your.company.or.organization.have.), "1-5", "6-25")
+data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="5-Jan"] <- "1-5"
+data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
+```
+
+For all of the columns asking if they have a certain mental health issue, replaces the value with a '1' if they do and a '0' if they don't.
+```{r}
+#64 -> 89
+for(i in 64:89){
+  levels(data[[i]]) <- c(levels(data[[i]]), 0, 1)
+  for(j in 1:nrow(data)){
+    data[[i]][j] <- if(is.na(data[[i]][j]) | data[[i]][j] == "") 0 else 1
+  }
+}
+```
+
+Removes all the repeat columns asking if they have a certain mental health issue that are completely blank.
+```{r}
+#51 -> 63
+for(i in 63:51){
+  data[[i]] <- NULL 
 }
 ```
 
 ```{r}
-data <- read.csv("OSMI Mental Health in Tech Survey 2017-18.csv", header=TRUE)
-
-levels(data$How.many.employees.does.your.company.or.organization.have.) <- c(levels(data$How.many.employees.does.your.company.or.organization.have.), "1-5", "6-25")
-data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="5-Jan"] <- "1-5"
-data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
-
 data
 ```
-
-```{r}
-head(data)
-```
-
-```{r}
-str(data)
-```
-
 
 
 Data Cleanup: Gender
@@ -35,12 +45,8 @@ table(data$What.is.your.gender.)
 ```
 ```{r}
 cis_female <- c( 'Female', 'female', 'Female ', 'Woman', 'woman', 'F', 'f', 'I identify as female', '*shrug emoji* (F)', 'Cis woman', 'Female (cisgender)', 'Cis-Female', 'Cisgendered woman', 'She/her/they/them', 'Cis female', 'cisgender female', 'femalw', 'femail', 'female (cis)', 'My sex is female.', 'female (cisgender)', 'Female (cis) ', 'Woman-identified', 'cis-Female', 'cis female', 'F, cisgender', 'Cis female ')
-
 cis_male <- c('male', 'Male', 'Ostensibly Male', 'male, born with xy chromosoms', 'Malel', 'M', 'MALE', 'm', 'Cis-male', 'Male ', 'cis male ', 'Cis Male', 'Man', 'Cisgender male', 'cis-male', 'Mail', 'cis hetero male', 'Male (cis)', "male (hey this is the tech industry you're talking about)", 'God King of the Valajar', 'Cis male', 'man', 'Male, cis', 'cis male', 'dude' , 'SWM')
-
-
 transgender <- c('transgender', 'Trans woman', 'Trans female', 'trans woman', 'Transfeminine', 'Trans man')
-
 gq <- c('male/androgynous ', 'Agender', '', 'Nonbinary', 'Male (or female, or both)', 'non binary', 'Female/gender non-binary.', 'N/A', 'genderfluid', 'Genderqueer', 'Demiguy', 'none', 'non-binary', 'Other', 'NB', 'Genderfluid', 'Nonbinary/femme', 'gender non-conforming woman', 'uhhhhhhhhh fem genderqueer?', 'n/a', 'Non-binary', 'Agender/genderfluid', 'Male-ish', 'sometimes', 'Contextual', 'Non binary', 'Genderqueer demigirl', 'Genderqueer/non-binary', 'nonbinary', 'Female-ish', '\\-', 'None')
 ```
 
@@ -60,7 +66,6 @@ for(i in 1:n){
     gender[i]
   }
 }
-
 ```
 
 ```{r}
@@ -72,6 +77,16 @@ data$What.is.your.gender. <- gender
 ```
 
 ```{r}
-table(data$What.is.your.gender.)
+data$What.is.your.gender. <- as.factor(data$What.is.your.gender.)
 ```
 
+
+```{r}
+table(data$What.is.your.gender.)
+```
+```{r}
+data
+```
+```{r}
+str(data$What.is.your.gender.)
+```
