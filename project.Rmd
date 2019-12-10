@@ -21,6 +21,19 @@ for(i in 64:89){
 }
 ```
 
+Combines the results of the third set of questions about mental health issues into the second
+```{r}
+#77 -> 89
+for(i in 89:77){
+  for(j in 1:nrow(data)){
+    if(data[[i]][j] == 1){
+      data[[i - 13]][j] <- data[[i]][j]
+    }
+  }
+  data[[i]] <- NULL
+}
+```
+
 Removes all the repeat columns asking if they have a certain mental health issue that are completely blank.
 ```{r}
 #51 -> 63
@@ -30,7 +43,61 @@ for(i in 63:51){
 ```
 
 ```{r}
-data
+table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
+
+
+Cleanup Diagnosis Check column
+
+if there was a diagnosis on a specific disorder the "Have.you.ever.been.diagnosed.with.a.mental.health.disorder." column is marked as a "Yes"
+```{r}
+for(j in 1:nrow(data)){
+  for(i in 63:51){
+    if(data[[50]][j] == ""){
+      if(data[[i]][j] == 1){
+        data[[50]][j] <- "Yes"
+      }
+    }
+  }
+}
+```
+```{r}
+table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
+```{r}
+table(data$Do.you.currently.have.a.mental.health.disorder.)
+table(data$Have.you.had.a.mental.health.disorder.in.the.past.)
+```
+
+
+```{r}
+for(j in 1:nrow(data)){
+  if(data[[50]][j] == ""){
+    if(data[[49]][j] == "No" && data[[64]][j] == "No"){
+      data[[50]][j] <- "No"
+    }else if(data[[49]][j] == "Don't Know"){
+      if(data[[64]][j] == "Don't Know"){
+        data[[50]][j] <- "Maybe"
+      }else if(data[[64]][j] == "Possibly"){
+        data[[50]][j] <- "Maybe"
+      }
+    }else if(data[[49]][j] == "Possibly"){
+      if(data[[64]][j] == "Don't Know"){
+        data[[50]][j] <- "Maybe"
+      }else if(data[[64]][j] == "Possibly"){
+        data[[50]][j] <- "Maybe"
+      }
+    }
+  }
+}
+```
+
+```{r}
+table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
+
+```{r}
+data$
 ```
 ```{r}
 mentalCheck <- as.vector.factor(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
