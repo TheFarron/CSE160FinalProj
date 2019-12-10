@@ -32,6 +32,12 @@ for(i in 63:51){
 ```{r}
 data
 ```
+```{r}
+mentalCheck <- as.vector.factor(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
+```{r}
+
+```
 
 
 Data Cleanup: Gender
@@ -90,3 +96,48 @@ data
 ```{r}
 str(data$What.is.your.gender.)
 ```
+
+```{r}
+source("http://www.sthda.com/upload/rquery_cormat.r")
+```
+
+```{r}
+rquery.cormat(data, type = "full")
+```
+
+```{r}
+library(sjPlot)
+```
+
+```{r}
+# ensure results are repeatable
+set.seed(7)
+```
+
+```{r}
+# load the library
+library(mlbench)
+library(caret)
+```
+```{r}
+data(data)
+```
+
+```{r}
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+```
+
+```{r}
+# train the model
+model <- train(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.~., data=data, method="lvq", preProcess="scale", trControl=control)
+```
+```{r}
+# estimate variable importance
+importance <- varImp(model, scale=FALSE)
+# summarize importance
+print(importance)
+# plot importance
+plot(importance)
+```
+
