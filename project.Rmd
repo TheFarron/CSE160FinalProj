@@ -36,7 +36,14 @@ data
 mentalCheck <- as.vector.factor(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
 ```
 ```{r}
+table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+table(data$Have.you.had.a.mental.health.disorder.in.the.past.)
 
+```
+```{r}
+dfSub <- data.frame(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.,data$Have.you.had.a.mental.health.disorder.in.the.past.)
+
+dfSub
 ```
 
 
