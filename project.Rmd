@@ -10,6 +10,7 @@ data$How.many.employees.does.your.company.or.organization.have.[data$How.many.em
 data$How.many.employees.does.your.company.or.organization.have.[data$How.many.employees.does.your.company.or.organization.have.=="25-Jun"] <- "6-25"
 ```
 
+
 For all of the columns asking if they have a certain mental health issue, replaces the value with a '1' if they do and a '0' if they don't.
 ```{r}
 #64 -> 89
@@ -18,6 +19,19 @@ for(i in 64:89){
   for(j in 1:nrow(data)){
     data[[i]][j] <- if(is.na(data[[i]][j]) | data[[i]][j] == "") 0 else 1
   }
+}
+```
+
+Combines the results of the third set of questions about mental health issues into the second
+```{r}
+#77 -> 89
+for(i in 89:77){
+  for(j in 1:nrow(data)){
+    if(data[[i]][j] == 1){
+      data[[i - 13]][j] <- data[[i]][j]
+    }
+  }
+  data[[i]] <- NULL
 }
 ```
 
