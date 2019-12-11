@@ -68,17 +68,27 @@ table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
 table(data$Do.you.currently.have.a.mental.health.disorder.)
 table(data$Have.you.had.a.mental.health.disorder.in.the.past.)
 ```
+```{r}
+levels(data$Have.you.had.a.mental.health.disorder.in.the.past.)
+levels(data$Do.you.currently.have.a.mental.health.disorder.)
+levels(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
 
+```{r}
+data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder. <- as.character(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
+```
 
 ```{r}
 for(j in 1:nrow(data)){
-  if(data[[50]][j] == ""){
+  if(data[[50]][j] == ("") || is.na(data[[50]][j]) == TRUE){
     if(data[[49]][j] == "No" && data[[64]][j] == "No"){
       data[[50]][j] <- "No"
-    }else if(data[[49]][j] == "Don't Know"){
-      if(data[[64]][j] == "Don't Know"){
+    }else if(data[[49]][j] == ("Don't Know")){
+      if(data[[64]][j] == ("Don't Know")){
         data[[50]][j] <- "Maybe"
-      }else if(data[[64]][j] == "Possibly"){
+      }else if(data[[64]][j] == ("Possibly")){
+        data[[50]][j] <- "Maybe"
+      }else if(data[[64]][j] == "Yes"){
         data[[50]][j] <- "Maybe"
       }
     }else if(data[[49]][j] == "Possibly"){
@@ -86,31 +96,27 @@ for(j in 1:nrow(data)){
         data[[50]][j] <- "Maybe"
       }else if(data[[64]][j] == "Possibly"){
         data[[50]][j] <- "Maybe"
+      }else if(data[[64]][j] == "Yes"){
+        data[[50]][j] <- "Maybe"
+      }
+    }else if(data[[49]][j] == "No"){
+      if(data[[64]][j] == "Don't Know"){
+        data[[50]][j] <- "No"
+      }else if(data[[64]][j] == "Possibly"){
+        data[[50]][j] <- "No"
       }
     }
   }
 }
+
+data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder. <- as.factor(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
 ```
 
 ```{r}
 table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
-```
-
-```{r}
-data$
-```
-```{r}
-mentalCheck <- as.vector.factor(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
-```
-```{r}
-table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)
-table(data$Have.you.had.a.mental.health.disorder.in.the.past.)
-
-```
-```{r}
-dfSub <- data.frame(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.,data$Have.you.had.a.mental.health.disorder.in.the.past.)
-
-dfSub
+test <- c(table(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.)[2:4])
+sum(test)
+data
 ```
 
 
@@ -169,49 +175,5 @@ data
 ```
 ```{r}
 str(data$What.is.your.gender.)
-```
-
-```{r}
-source("http://www.sthda.com/upload/rquery_cormat.r")
-```
-
-```{r}
-rquery.cormat(data, type = "full")
-```
-
-```{r}
-library(sjPlot)
-```
-
-```{r}
-# ensure results are repeatable
-set.seed(7)
-```
-
-```{r}
-# load the library
-library(mlbench)
-library(caret)
-```
-```{r}
-data(data)
-```
-
-```{r}
-# prepare training scheme
-control <- trainControl(method="repeatedcv", number=10, repeats=3)
-```
-
-```{r}
-# train the model
-model <- train(data$Have.you.ever.been.diagnosed.with.a.mental.health.disorder.~., data=data, method="lvq", preProcess="scale", trControl=control)
-```
-```{r}
-# estimate variable importance
-importance <- varImp(model, scale=FALSE)
-# summarize importance
-print(importance)
-# plot importance
-plot(importance)
 ```
 
