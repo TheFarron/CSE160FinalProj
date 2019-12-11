@@ -177,3 +177,46 @@ data
 str(data$What.is.your.gender.)
 ```
 
+WordCloud representing what employees think employers can do to improve mental health support
+```{r}
+library("tm")
+library("wordcloud")
+
+corpus <- Corpus(VectorSource(data$Briefly.describe.what.you.think.the.industry.as.a.whole.and.or.employers.could.do.to.improve.mental.health.support.for.employees.))
+corpus
+
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, function(x) removeWords(x, stopwords("english")))
+corpus <- tm_map(corpus, function(x) removeWords(x, c("like", "can", "also", "mental", "health", "dont","just")))
+
+pal = brewer.pal(5, "Blues")
+pal[1] = "slategray1"
+
+wordcloud(corpus,min.freq=1, max.words=60, scale=c(3,.5), colors=pal)
+
+
+
+
+```
+
+WordCloud representing the factors involved in whether or not an employee chooses to talk about mental health with employers/potential employers
+```{r}
+library("tm")
+library("wordcloud")
+
+words.all <- as.vector(as.matrix(data[,c("Why.or.why.not.","Why.or.why.not..1")]))
+
+words.corpus<-Corpus(VectorSource((words.all)))
+words.corpus
+
+words.corpus <- tm_map(words.corpus, content_transformer(tolower))
+words.corpus <- tm_map(words.corpus, removePunctuation)
+words.corpus <- tm_map(words.corpus, function(x) removeWords(x, stopwords("english")))
+
+
+pal = brewer.pal(5, "Reds")
+
+wordcloud(words.corpus,min.freq=1, max.words=60, scale=c(3,.5), colors=pal)
+```
+
