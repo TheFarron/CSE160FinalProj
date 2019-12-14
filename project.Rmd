@@ -228,6 +228,7 @@ wordcloud(words.corpus,min.freq=1, max.words=60, scale=c(3,.5), colors=pal)
 ```
 
 
+Naive Bayes classifier
 ```{r}
 library(e1071)
 
@@ -244,7 +245,6 @@ library(data.table)
 
 
 t <- data[,c(3:22, 75, 78, 79)]
-#t <- data[,c(3,4,5)]
 
 
 t$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. <- data$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.
