@@ -1,3 +1,9 @@
+---
+output: 
+  html_document: 
+    fig_height: 8
+    fig_width: 10
+---
 Reading in the data to a data.frame object.
 ```{r}
 data <- read.csv("OSMI Mental Health in Tech Survey 2017-18.csv", header=TRUE)
@@ -213,6 +219,7 @@ words.corpus
 words.corpus <- tm_map(words.corpus, content_transformer(tolower))
 words.corpus <- tm_map(words.corpus, removePunctuation)
 words.corpus <- tm_map(words.corpus, function(x) removeWords(x, stopwords("english")))
+words.corpus <- tm_map(words.corpus, function(x) removeWords(x, c("job", "mental", "health", "issues")))
 
 
 pal = brewer.pal(5, "Reds")
@@ -220,3 +227,62 @@ pal = brewer.pal(5, "Reds")
 wordcloud(words.corpus,min.freq=1, max.words=60, scale=c(3,.5), colors=pal)
 ```
 
+
+```{r}
+library(e1071)
+
+library(ggplot2)
+library(caret)
+library(Amelia)
+library(caretEnsemble)
+library(psych)
+library(mice)
+library(GGally)
+library(rpart)
+library(randomForest)
+library(data.table)
+
+
+t <- data[,c(3:22, 75, 78, 79)]
+#t <- data[,c(3,4,5)]
+
+
+t$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. <- data$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.
+
+t$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. <- as.factor(t$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+
+t$Describe.the.conversation.with.coworkers.you.had.about.your.mental.health.including.their.reactions. <- NULL
+t$Describe.the.conversation.you.had.with.your.employer.about.your.mental.health..including.their.reactions.and.what.actions.were.taken.to.address.your.mental.health.issue.questions. <- NULL
+t$Describe.the.conversation.your.coworker.had.with.you.about.their.mental.health..please.do.not.use.names.. <- NULL
+t
+indxTrain <- createDataPartition(y = t$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues., p = 0.75,list = FALSE)
+training <- t[indxTrain,]
+testing <- t[-indxTrain,]
+
+x = na.omit(data.frame(training[,1:21]))
+
+x$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. <- as.factor(x$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+
+y = x$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.
+
+x$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. <- NULL
+
+y <- as.factor(y)
+
+setnames(x, old=c("How.many.employees.does.your.company.or.organization.have.", "Is.your.employer.primarily.a.tech.company.organization.", "Is.your.primary.role.within.your.company.related.to.tech.IT.", "Does.your.employer.provide.mental.health.benefits.as.part.of.healthcare.coverage.", "Do.you.know.the.options.for.mental.health.care.available.under.your.employer.provided.health.coverage.", "Has.your.employer.ever.formally.discussed.mental.health..for.example..as.part.of.a.wellness.campaign.or.other.official.communication..", "Does.your.employer.offer.resources.to.learn.more.about.mental.health.disorders.and.options.for.seeking.help.", "Is.your.anonymity.protected.if.you.choose.to.take.advantage.of.mental.health.or.substance.abuse.treatment.resources.provided.by.your.employer.", "If.a.mental.health.issue.prompted.you.to.request.a.medical.leave.from.work..how.easy.or.difficult.would.it.be.to.ask.for.that.leave.", "Would.you.feel.more.comfortable.talking.to.your.coworkers.about.your.physical.health.or.your.mental.health.", "Would.you.feel.comfortable.discussing.a.mental.health.issue.with.your.direct.supervisor.s..", "Have.you.ever.discussed.your.mental.health.with.your.employer." , "Would.you.feel.comfortable.discussing.a.mental.health.issue.with.your.coworkers."  , "Have.you.ever.discussed.your.mental.health.with.coworkers.", "Have.you.ever.had.a.coworker.discuss.their.or.another.coworker.s.mental.health.with.you.", "Overall..how.much.importance.does.your.employer.place.on.physical.health.", "Overall..how.much.importance.does.your.employer.place.on.mental.health.", 'Are.you.openly.identified.at.work.as.a.person.with.a.mental.health.issue.', "If.they.knew.you.suffered.from.a.mental.health.disorder..how.do.you.think.that.team.members.co.workers.would.react.", "X.strong.Have.you.observed.or.experienced.an.unsupportive.or.badly.handled.response.to.a.mental.health.issue.in.your.current.or.previous.workplace...strong."), new = c('# of employees', 'primarily tech', 'role IT related', 'MH coverage', 'options for MH care', 'formally discussed MH', 'employer offer resources', 'is anonymity protected', 'medical leave feasability', 'comfortable talking health w/ coworkers', 'comfortable talking health w/ supervisor', 'comfortable talking health w/ employer', 'comfortable talking MH w/ coworkers', 'ever discussed MH w/ coworkers' ,'ever had coworker discuss MH w/ you', 'employer importance on health', 'employer importance on MH', 'openly identify w/ MH', 'how would coworkers react if you had MH', 'observed lack of support to MH @ work?'))
+x
+
+model = train(x, y,'nb',trControl=trainControl(method='cv',number=10))
+model
+
+setnames(x, old=c("How.many.employees.does.your.company.or.organization.have.", "Is.your.employer.primarily.a.tech.company.organization.", "Is.your.primary.role.within.your.company.related.to.tech.IT.", "Does.your.employer.provide.mental.health.benefits.as.part.of.healthcare.coverage.", "Do.you.know.the.options.for.mental.health.care.available.under.your.employer.provided.health.coverage.", "Has.your.employer.ever.formally.discussed.mental.health..for.example..as.part.of.a.wellness.campaign.or.other.official.communication..", "Does.your.employer.offer.resources.to.learn.more.about.mental.health.disorders.and.options.for.seeking.help.", "Is.your.anonymity.protected.if.you.choose.to.take.advantage.of.mental.health.or.substance.abuse.treatment.resources.provided.by.your.employer.", "If.a.mental.health.issue.prompted.you.to.request.a.medical.leave.from.work..how.easy.or.difficult.would.it.be.to.ask.for.that.leave.", "Would.you.feel.more.comfortable.talking.to.your.coworkers.about.your.physical.health.or.your.mental.health.", "Would.you.feel.comfortable.discussing.a.mental.health.issue.with.your.direct.supervisor.s..", "Have.you.ever.discussed.your.mental.health.with.your.employer." , "Would.you.feel.comfortable.discussing.a.mental.health.issue.with.your.coworkers."  , "Have.you.ever.discussed.your.mental.health.with.coworkers.", "Have.you.ever.had.a.coworker.discuss.their.or.another.coworker.s.mental.health.with.you.", "Overall..how.much.importance.does.your.employer.place.on.physical.health.", "Overall..how.much.importance.does.your.employer.place.on.mental.health.", 'Are.you.openly.identified.at.work.as.a.person.with.a.mental.health.issue.', "If.they.knew.you.suffered.from.a.mental.health.disorder..how.do.you.think.that.team.members.co.workers.would.react.", "X.strong.Have.you.observed.or.experienced.an.unsupportive.or.badly.handled.response.to.a.mental.health.issue.in.your.current.or.previous.workplace...strong."), new = c('# of employees', 'primarily tech', 'role IT related', 'MH coverage', 'options for MH care', 'formally discussed MH', 'employer offer resources', 'is anonymity protected', 'medical leave feasability', 'comfortable talking health w/ coworkers', 'comfortable talking health w/ supervisor', 'comfortable talking health w/ employer', 'comfortable talking MH w/ coworkers', 'ever discussed MH w/ coworkers' ,'ever had coworker discuss MH w/ you', 'employer importance on health', 'employer importance on MH', 'openly identify w/ MH', 'how would coworkers react if you had MH', 'observed lack of support to MH @ work?'))
+
+Predict <- predict(model,newdata = testing )
+confusionMatrix(Predict, testing$data.Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. )
+
+#Plot Variable performance
+pl <- varImp(model)
+pdf("rplot.pdf") 
+plot(pl)
+dev.off()
+```
