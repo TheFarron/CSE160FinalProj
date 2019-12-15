@@ -182,6 +182,32 @@ data
 ```{r}
 str(data$What.is.your.gender.)
 ```
+```{r}
+str(data)
+```
+
+Demographics
+```{r}
+library(ggplot2)
+```
+
+Columns to use
+How.many.employees.does.your.company.or.organization.have.
+X.strong.Are.you.self.employed...strong.
+Is.your.employer.primarily.a.tech.company.organization.  
+Do.you.believe.your.productivity.is.ever.affected.by.a.mental.health.issue.  hue with age
+Have.you.ever.been.diagnosed.with.a.mental.health.disorder.
+
+```{r}
+
+```
+
+
+
+
+
+
+
 
 WordCloud representing what employees think employers can do to improve mental health support
 ```{r}
