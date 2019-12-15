@@ -175,5 +175,88 @@ data
 ```
 ```{r}
 str(data$What.is.your.gender.)
+head(data)
 ```
 
+
+Creating of a model by Felix Quintana
+
+Plan:
+Create a model that will predict the score of a employee on the tech inudstry, this provides both a psuedo score (Using standard random forest I am not getting class probility estimations, only classification) and label importance for 
+```{r}
+for(i in 1:ncol(data)){
+  data[,i] <- factor(data[,i]);
+}
+```
+Okay so the second thing I want to do is preprocess the data somehow. I first begin by getting rid of useless data such as those who are self employed.
+
+
+```{r}
+data[,3] <- na.omit(data[,3]);
+data[,2] <- na.omit(data[,2]);
+try(
+for(i in 1:nrow(data)){
+  if (data[i,2] == 1){
+    data <- data[-c(i),];
+  }
+}
+)
+#Checking if all the self employed ppl are gone. 
+data
+
+randomForstCurrentEmployerModel <- data[,c(3,4,5,6,7,8,9,10,11,12,13,14,17,19,21,22,83)];#20,22,23,84)];
+randomForestCurrentAndPreviousEmployer <- data[,c(3,4,5,6,7,8,9,10,11,12,13,14,17,19,21,22,31,32,33,34,35,36,37,38,39,40,45,47,48,83)];
+#3-15,17,18,20,22,23, 84;
+randomForstCurrentEmployerModel <- na.omit(randomForstCurrentEmployerModel);
+```
+Now to make a new dataframe just containing whats interesting for me.
+```{r}
+#install.packages("randomForest");
+library(randomForest);
+library(randomForestExplainer);
+# Split into Train and Validation sets
+# Training Set : Validation Set = 70 : 30 (random)
+set.seed(100);
+train <- sample(nrow(randomForstCurrentEmployerModel), 0.7*nrow(randomForstCurrentEmployerModel), replace = FALSE);
+TrainSet<- randomForstCurrentEmployerModel[train,];
+#TrainSet
+ValidSet <- randomForstCurrentEmployerModel[-train,];
+model1 <- randomForest(Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. ~ ., data = TrainSet, importance = TRUE)
+
+#predTrain <- predict(model1, TrainSet, type = "class")
+# Checking classification accuracy
+#table(predTrain, TrainSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+# Predicting on Validation set
+predValid <- predict(model1, ValidSet, type = "class")
+# Checking classification accuracy
+mean(predValid == ValidSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)                    
+table(predValid,ValidSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+
+
+```
+second model
+```{r}
+randomForestCurrentAndPreviousEmployer <- na.omit(randomForestCurrentAndPreviousEmployer);
+str(randomForestCurrentAndPreviousEmployer);
+train <- sample(nrow(randomForestCurrentAndPreviousEmployer), 0.7*nrow(randomForestCurrentAndPreviousEmployer), replace = FALSE);
+TrainSet<- randomForestCurrentAndPreviousEmployer[train,];
+#TrainSet
+ValidSet <- randomForestCurrentAndPreviousEmployer[-train,];
+model1 <- randomForest(Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues. ~ ., data = TrainSet, importance = TRUE)
+
+#predTrain <- predict(model1, TrainSet, type = "class")
+# Checking classification accuracy
+#table(predTrain, TrainSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+# Predicting on Validation set
+predValid <- predict(model1, ValidSet, type = "class")
+# Checking classification accuracy
+mean(predValid == ValidSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)                    
+table(predValid,ValidSet$Overall..how.well.do.you.think.the.tech.industry.supports.employees.with.mental.health.issues.)
+```
+Time for visualzation
+```{r}
+min_depth_frame <- min_depth_distribution(model1)
+
+```
+
+end
