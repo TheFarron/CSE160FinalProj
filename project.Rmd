@@ -185,10 +185,14 @@ str(data$What.is.your.gender.)
 ```{r}
 str(data)
 ```
+```{r}
+table(data$What.is.your.age.)
+```
 
 Demographics
 ```{r}
 library(ggplot2)
+levels(data$How.many.employees.does.your.company.or.organization.have.)
 ```
 
 Columns to use
@@ -197,14 +201,37 @@ X.strong.Are.you.self.employed...strong.
 Is.your.employer.primarily.a.tech.company.organization.  
 Do.you.believe.your.productivity.is.ever.affected.by.a.mental.health.issue.  hue with age
 Have.you.ever.been.diagnosed.with.a.mental.health.disorder.
+Are.you.openly.identified.at.work.as.a.person.with.a.mental.health.issue.
+What.is.your.gender.
+What.country.do.you..strong.live..strong..in. 
+What.is.your.race.
+What.is.your.age.
+```{r}
+data2 <- data[(data$How.many.employees.does.your.company.or.organization.have. != ""), ]
+levels(data2$How.many.employees.does.your.company.or.organization.have.)
+```
 
 ```{r}
-
+ggplot(data = data2, aes(How.many.employees.does.your.company.or.organization.have.))+geom_bar() + xlab("Company Size")
+ggsave("ComapnySize.png")
 ```
 
 
+```{r}
+ggplot(data = data, aes(What.is.your.gender.))+geom_bar() + xlab("Gender") + ylab(("Count"))
+ggsave("Gender.png")
+```
+```{r}
+str(data[(data$X.strong.Are.you.self.employed...strong. != 1), ])
+```
 
+```{r}
+ggplot(data = data, aes(What.country.do.you..strong.live..strong..in.))+geom_map() + xlab("Gender")
+ggsave("Countries.png")
+```
+```{r}
 
+```
 
 
 
